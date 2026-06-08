@@ -35,6 +35,7 @@ export function Contact() {
         options: ['استشارات وتكاملات ذكاء اصطناعي', 'تحليل بيانات', 'تطوير تطبيقات متكاملة', 'أخرى / تواصل عام'],
         submit: 'إرسال الرسالة',
         success: 'تم تجهيز الرسالة',
+        activation: 'يجب تفعيل نموذج FormSubmit أولاً من خلال رسالة التفعيل المرسلة إلى بريدك الإلكتروني.',
         error: 'تعذر إرسال الرسالة. حاول مرة أخرى لاحقاً.',
       }
     : {
@@ -56,6 +57,7 @@ export function Contact() {
         options: ['AI Consulting & Integrations', 'Data Analytics', 'Full-Stack App Development', 'Other / General Chat'],
         submit: 'Initialize Connection',
         success: 'Message Prepared',
+        activation: 'The FormSubmit form still needs activation. Open the activation email sent to your inbox and click the activation link.',
         error: 'Failed to send message. Please try again later.',
       };
 
@@ -83,6 +85,14 @@ export function Contact() {
         throw new Error(`Request failed with status ${response.status}`);
       }
 
+      const result = await response.json();
+      const isSuccess = result?.success === true || result?.success === 'true';
+
+      if (!isSuccess) {
+        const message = typeof result?.message === 'string' ? result.message : content.error;
+        throw new Error(message);
+      }
+
       setIsSubmitted(true);
       setTimeout(() => {
         setIsSubmitted(false);
@@ -90,7 +100,9 @@ export function Contact() {
       }, 3000);
     } catch (error) {
       console.error(error);
-      alert(content.error);
+      const message = error instanceof Error ? error.message : content.error;
+      const activationNeeded = message.toLowerCase().includes('activation');
+      alert(activationNeeded ? content.activation : message || content.error);
     }
   };
 
