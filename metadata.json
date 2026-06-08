@@ -1,0 +1,6 @@
+{
+  "name": "chuks-portfolio",
+  "description": "Portfolio website for Chuks Okafor Emmanuel.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
